@@ -7,6 +7,26 @@ from matplotlib.lines import Line2D
 def hist(pr, bins=10, save=False, filename=None,
          figsize=(10, 8), xlabel='Predicted change (log2)',
          ylabel='No. of metabolites', xlim=None, color=None, ylim=None):
+    '''
+    Plot histogram of predicted changes
+
+    Args:
+
+    pr (pandas.Series): predicted changes
+    bins (int): number of bins
+    save (bool): save figure
+    filename (str): filename
+    figsize (tuple): figure size
+    xlabel (str): x-axis label
+    ylabel (str): y-axis label
+    xlim (tuple): x-axis limits
+    color (str): color
+    ylim (tuple): y-axis limits
+
+    Returns:
+
+    matplotlib.pyplot.figure
+    '''
     fig, ax = plt.subplots(figsize=figsize)
     if color != None:
         sns.histplot(data=pr, bins=bins, ax=ax, color=color)
@@ -37,6 +57,43 @@ def parity(data, xcolumn, ycolumn, figtitle=None, save=False,
            cbar_cmap='Reds', xlabel='Predicted change (log2)', alpha=0.5,
            ylabel='Measured change (log2)', color='C0', cc_column='control_coeff',
            edgecolor='k', **kwargs):
+    '''
+    Plot parity plot
+
+    Args:
+
+    data (pandas.DataFrame): data
+    xcolumn (str): column name for x-axis
+    ycolumn (str): column name for y-axis
+    figtitle (str): figure title
+    save (bool): save figure
+    filename (str): filename
+    lb (float): lower bound for colorbar
+    ub (float): upper bound for colorbar
+    nb (int): number of bins for colorbar
+    cc (bool): colorbar
+    show_names (bool): show metabolite names
+    show_percentage (bool): show percentage
+    ylim (tuple): y-axis limits
+    xlim (tuple): x-axis limits
+    figsize (tuple): figure size
+    l_p (list): list of tuples for percentage locations
+    l_n (list): list of tuples for metabolite names locations
+    n (list): list of number of metabolites to show
+    fsize (int): font size
+    cbar_label (str): colorbar label
+    cbar_cmap (str): colorbar colormap
+    xlabel (str): x-axis label
+    alpha (float): alpha
+    ylabel (str): y-axis label
+    color (str): color
+    cc_column (str): column name for colorbar
+    edgecolor (str): edgecolor
+
+    Returns:
+
+    matplotlib.pyplot.figure
+    '''
     fig, ax = plt.subplots(figsize=figsize)
     if cc == True:
         sc = ax.scatter(x=np.log2(data[ycolumn]),
@@ -78,6 +135,19 @@ def parity(data, xcolumn, ycolumn, figtitle=None, save=False,
 
 
 def calculate_percentage(df, colname, colname2):
+    '''
+    Calculate percentage of metabolites in each quadrant
+
+    Args:
+
+    df (pandas.DataFrame): data
+    colname (str): column name for x-axis
+    colname2 (str): column name for y-axis
+
+    Returns:
+
+    tuple: percentage of metabolites in each quadrant
+    '''
     df = df.dropna(axis=0)
     UR = 100 * len(df.loc[(np.log2(df[colname]) > 0.0) &
                           (np.log2(df[colname2]) > 0.0)])/len(df)
@@ -91,6 +161,20 @@ def calculate_percentage(df, colname, colname2):
 
 
 def calculate_sc_percentage(df, compartment, colname, colname2):
+    '''
+    Calculate percentage of metabolites in each quadrant for each compartment
+
+    Args:
+
+    df (pandas.DataFrame): data
+    compartment (str): compartment
+    colname (str): column name for x-axis
+    colname2 (str): column name for y-axis
+
+    Returns:
+
+    tuple: percentage of metabolites in each quadrant for each compartment
+    '''
     df = df.loc[df.compartment == compartment].dropna(axis=0)
     UR = 100 * len(df.loc[(np.log2(df[colname]) > 0.0) &
                           (np.log2(df[colname2]) > 0.0)])/len(df)
@@ -107,6 +191,31 @@ def add_percentage(df, ax, colname, colname2,
                    l=(0.02, 0.8), l_1=(0.02, 0.75), l2=(0.7, 0.8), l_2=(0.7, 0.75),
                    l3=(0.02, 0.4), l_3=(0.02, 0.35), l4=(0.7, 0.4), l_4=(0.7, 0.35),
                    fsize=12, show_sc_percentages=True, **kwargs):
+    '''
+    Add percentage of metabolites in each quadrant
+
+    Args:
+
+    df (pandas.DataFrame): data
+    ax (matplotlib.pyplot.axis): axis
+    colname (str): column name for x-axis
+    colname2 (str): column name for y-axis
+    l (tuple): location of percentage for upper left quadrant
+    l_1 (tuple): location of percentage for upper left quadrant for each compartment
+    l2 (tuple): location of percentage for upper right quadrant
+    l_2 (tuple): location of percentage for upper right quadrant for each compartment
+    l3 (tuple): location of percentage for lower left quadrant
+    l_3 (tuple): location of percentage for lower left quadrant for each compartment
+    l4 (tuple): location of percentage for lower right quadrant
+    l_4 (tuple): location of percentage for lower right quadrant for each compartment
+    fsize (int): font size
+    show_sc_percentages (bool): show percentage for each compartment
+    kwargs (dict): keyword arguments
+
+    Returns:
+
+    matplotlib.pyplot.axis
+    '''
     total_percentage = calculate_percentage(
         df=df, colname=colname, colname2=colname2)
     ax.text(l[0], l[1], "{:.2f}%".format(total_percentage[0]),
@@ -154,6 +263,17 @@ def add_percentage(df, ax, colname, colname2,
 
 
 def update_index(df):
+    '''
+    Update index of dataframe
+
+    Args:
+
+    df (pandas.DataFrame): dataframe
+
+    Returns:
+
+    pandas.DataFrame
+    '''
     df.compartment = df.compartment.replace(
         {'mitochondrial': 'm', 'cytoplasm': 'c', 'nuclear': 'n'})
     new = {i: i+' ('+df.loc[(df.index == i)]
@@ -163,6 +283,18 @@ def update_index(df):
 
 
 def get_newlist(met_list, n):
+    '''
+    Get list of metabolites
+
+    Args:
+
+    met_list (list): list of metabolites
+    n (int): number of metabolites to show
+
+    Returns:
+
+    list: list of metabolites
+    '''
     newlist = []
     count = 0
     for i in range(0, len(met_list), n):
@@ -174,6 +306,29 @@ def get_newlist(met_list, n):
 def add_metabolite_names1(df, ax, colname, colname2,
                           l=(0.02, 0.8), l2=(0.7, 0.8), l3=(0.02, 0.4), l4=(0.7, 0.4),
                           n=1, c='black', fsize=12, compartments=False, **kwargs):
+    '''
+    Add metabolite names
+
+    Args:
+
+    df (pandas.DataFrame): data
+    ax (matplotlib.pyplot.axis): axis
+    colname (str): column name for x-axis
+    colname2 (str): column name for y-axis
+    l (tuple): location of metabolite names for upper left quadrant
+    l2 (tuple): location of metabolite names for upper right quadrant
+    l3 (tuple): location of metabolite names for lower left quadrant
+    l4 (tuple): location of metabolite names for lower right quadrant
+    n (int): number of metabolites to show
+    c (str): color
+    fsize (int): font size
+    compartments (bool): show compartment
+    kwargs (dict): keyword arguments
+
+    Returns:
+
+    matplotlib.pyplot.axis
+    '''
     if compartments == True:
         UL = list(update_index(df.loc[(np.log2(df[colname]) > 0.0) & (
             np.log2(df[colname2]) < 0.0)]).index.unique())
@@ -212,21 +367,34 @@ def scatter_with_errorbar(xdata, ydata, xerr, yerr, ax, colors=None, x='WT_Car',
                           xlabel='Measured metabolomics foldchange (log2)',
                           ylabel='Predicted foldchange (log2)', cmap=None,
                           fig_title=False, xlim=(-3.5, 3.5), ylim=(-3.5, 3.5)):
-    """Creates scatter plot with error bars
+    '''
+    Plot scatter plot with error bars
 
     Args:
-        xdata (pandas.series): data on x-axis
-        ydata (pandas.series): data on y-axis
-        xerr (list): _description_
-        yerr (list): _description_
-        ax (_type_): _description_
-        colors (_type_, optional): _description_. Defaults to None.
-        x (str, optional): _description_. Defaults to 'WT_Car'.
-        y (str, optional): _description_. Defaults to 'KO_Car'.
-        figtitle_suffix (str, optional): _description_. Defaults to ' (RNAseq)'.
-        legend_loc (str, optional): _description_. Defaults to 'upper right'.
-        compartment (bool, optional): _description_. Defaults to False.
-    """
+
+    xdata (numpy.array): x-axis data
+    ydata (numpy.array): y-axis data
+    xerr (numpy.array): x-axis error
+    yerr (numpy.array): y-axis error
+    ax (matplotlib.pyplot.axis): axis
+    colors (numpy.array): colors
+    x (str): x-axis label
+    y (str): y-axis label
+    figtitle_suffix (str): figure title suffix
+    legend_loc (str): legend location
+    compartment (bool): compartment
+    xlabel (str): x-axis label
+    ylabel (str): y-axis label
+    cmap (str): colormap
+    fig_title (bool): figure title
+    xlim (tuple): x-axis limits
+    ylim (tuple): y-axis limits
+
+    Returns:
+
+    matplotlib.pyplot.axis
+    '''
+
     if compartment == True:
         legend_elements = [Line2D([0], [0], marker='o', color='w', label='cytoplasm',
                                   markerfacecolor='r', markersize=15),
@@ -265,7 +433,42 @@ def parity_with_errorbars(df, xcolumn, ycolumn, xerr_column, yerr_column,
                                (0.05, 0.25), (0.55, 0.25)],
                           l_n=[(0.05, 0.9), (0.55, 0.9),
                                (0.05, 0.2), (0.55, 0.2)],
-                          n_n=[1, 1, 2, 1]):
+                          n_n=[1, 1, 2, 1], fsize=10):
+    '''
+    Plot parity plot with error bars
+
+    Args:
+
+    df (pandas.DataFrame): data
+    xcolumn (str): column name for x-axis
+    ycolumn (str): column name for y-axis
+    xerr_column (str): column name for x-axis error
+    yerr_column (str): column name for y-axis error
+    filename (str): filename
+    save (bool): save figure
+    figsize (tuple): figure size
+    xlim (tuple): x-axis limits
+    ylim (tuple): y-axis limits
+    colors (str): color
+    xlabel (str): x-axis label
+    ylabel (str): y-axis label
+    fig_title (str): figure title
+    legend_loc (str): legend location
+    cmap (str): colormap
+    figtitle_suffix (str): figure title suffix
+    show_percentage (bool): show percentage
+    show_sc_percentages (bool): show percentage for each compartment
+    show_metabolite_names (bool): show metabolite names
+    l_p (list): list of tuples for percentage locations
+    l_n (list): list of tuples for metabolite names locations
+    n_n (list): list of number of metabolites to show
+    fsize (int): font size
+
+    Returns:
+
+    matplotlib.pyplot.figure
+    matplotlib.pyplot.axis
+    '''
     fig, ax = plt.subplots(figsize=figsize)
     scatter_with_errorbar(xdata=np.log2(df[xcolumn]), ydata=np.log2(df[ycolumn]),
                           xerr=df[xerr_column], yerr=df[yerr_column], ax=ax,
@@ -275,17 +478,32 @@ def parity_with_errorbars(df, xcolumn, ycolumn, xerr_column, yerr_column,
 
     if show_percentage == True:
         add_percentage(df=df, ax=ax, colname2=xcolumn, colname=ycolumn,
-                       show_sc_percentages=show_sc_percentages, fsize=15,
+                       show_sc_percentages=show_sc_percentages, fsize=1.2*fsize,
                        l=l_p[0], l2=l_p[1], l3=l_p[2], l4=l_p[3])
     if show_metabolite_names == True:
         add_metabolite_names1(df=df, ax=ax, colname2=xcolumn, colname=ycolumn,
-                              fsize=10, l=l_n[0], l2=l_n[1], l3=l_n[2], l4=l_n[3],
+                              fsize=fsize, l=l_n[0], l2=l_n[1], l3=l_n[2], l4=l_n[3],
                               n=n_n[0], n2=n_n[1], n3=n_n[2], n4=n_n[3])
     if save == True:
         return fig.savefig(filename, dpi=300, bbox_inches='tight')
 
 
 def differential_exp(df, figsize, ylabel='genes', xlabel=None):
+    '''
+    Plot differential expression
+
+    Args:
+
+    df (pandas.DataFrame): data
+    figsize (tuple): figure size
+    ylabel (str): y-axis label
+    xlabel (str): x-axis label
+
+    Returns:
+
+    matplotlib.pyplot.figure
+    matplotlib.pyplot.axis
+    '''
     fig, ax = plt.subplots(figsize=figsize)
     cm = sns.heatmap(data=df, cmap='seismic',
                      center=0, robust=True, xticklabels=False, yticklabels=False,
@@ -298,6 +516,21 @@ def differential_exp(df, figsize, ylabel='genes', xlabel=None):
 
 
 def control_coeff(df, figsize, xlabel='genes', ylabel='metabolites'):
+    '''
+    Plot control coefficients
+
+    Args:
+
+    df (pandas.DataFrame): data
+    figsize (tuple): figure size
+    xlabel (str): x-axis label
+    ylabel (str): y-axis label
+
+    Returns:
+
+    matplotlib.pyplot.figure
+    matplotlib.pyplot.axis
+    '''
     cm = sns.clustermap(data=df, cmap='seismic', center=0, robust=True,
                         figsize=figsize, yticklabels=False, dendrogram_ratio=(0.15, 0.0),
                         xticklabels=False, cbar_kws={'label': '$C_{\Phi}^{M}$'},
@@ -310,6 +543,21 @@ def control_coeff(df, figsize, xlabel='genes', ylabel='metabolites'):
 
 
 def response_coeff(df, figsize=(15, 8), xlabel='genes', ylabel='metabolites', fsize=20):
+    '''
+    Plot response coefficients
+
+    Args:
+
+    df (pandas.DataFrame): data
+    figsize (tuple): figure size
+    xlabel (str): x-axis label
+    ylabel (str): y-axis label
+    fsize (int): font size
+
+    Returns:
+
+    matplotlib.pyplot.figure
+    '''
     cm = sns.clustermap(data=df, cmap='seismic', center=0, robust=True,
                         figsize=figsize, col_cluster=False, row_cluster=False,
                         yticklabels=True, dendrogram_ratio=(0.12, 0.0),

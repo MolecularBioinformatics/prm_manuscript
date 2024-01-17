@@ -1,7 +1,5 @@
 # Predictive ranking of metabolites manuscript
-Contains Supplementary Tables (S1, S2, S3, and S4) and data associated with the "[GEMCAT](https://github.com/MolecularBioinformatics/GEMCAT) - A new algorithm for gene expression-based prediction of metabolic alterations" manuscript.
-
-BioRxiv: 
+Contains Supplementary Tables (S1, S2, S3, and S4) and data associated with the "GEMCAT - A new algorithm for gene expression-based prediction of metabolic alterations" manuscript. [BioRxiv link](https://www.biorxiv.org/content/10.1101/2024.01.15.575710v1)
 
 ****
 The repository contains the following:

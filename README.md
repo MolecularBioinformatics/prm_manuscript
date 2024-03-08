@@ -11,3 +11,13 @@ The repository contains the following:
 6. Supplementary Table S4
 7. LICENSE: A GPL 3.0 license
 8. README: A markdown file
+
+****
+Here's how to access the data:
+
+Install Git LFS: 
+  * Ensure you have Git LFS installed on your system. You can find installation instructions on the official website: https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage.
+  * In the cloned repository directory, run the command ```git lfs pull```.
+
+This command will download the actual data for all the pointer files present in your repository, including the one you mentioned.
+Once you run git lfs pull, the data file will be downloaded to its designated location, and you should be able to access its content.

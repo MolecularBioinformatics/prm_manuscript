@@ -9,8 +9,11 @@ The repository contains the following:
 4. Supplementary Table S2
 5. Supplementary Table S3
 6. Supplementary Table S4
-7. LICENSE: A GPL 3.0 license
-8. README: A markdown file
+7. Supplementary Table Errormetrics (Figure 3 and Figure S4) for rats
+8. Supplementary Table Metabolite accuracy (Figure 3b) for rats
+9. Supplementary Table Metabolite accuracy (Figure S3) for rats
+10. LICENSE: A GPL 3.0 license
+11. README: A markdown file
 
 ****
 Here's how to access the data:
